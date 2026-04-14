@@ -36,9 +36,23 @@ def main(debug=False):
         "borrowhistory": "Borrow History",
     }
 
+    def create_view(table_model, db_session, name=None, **kwargs):
+        """
+        Function that displays Primary Keys and Foreign Keys and makes them editable.
+        """
+
+        columns = [col.name for col in table_model.__table__.columns]
+
+        class DynamicModelView(ModelView):
+            column_list = columns
+            form_columns = columns
+
+        return DynamicModelView(table_model, db_session, name=name, **kwargs)
+
     for table_name, model_class in class_dict.items():
         display_name = aliases.get(table_name, table_name.capitalize())
-        admin.add_view(ModelView(model_class, db.session, name=display_name))
+        view = create_view(model_class, db.session, name=display_name)
+        admin.add_view(view)
 
     @app.route("/")
     def index():

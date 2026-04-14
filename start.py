@@ -3,11 +3,11 @@
 TODO: Make this into a cli tool with an full update manager
 """
 
-import importlib.util
 import sqlite3
 import subprocess
 import sys
 from pathlib import Path
+
 
 def check_dependencies():
     try:
@@ -17,7 +17,14 @@ def check_dependencies():
     except ImportError:
         print("Key dependencies not found. Installing...")
         subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "-r", f"{Path(__file__).parent.resolve()}/requirements.txt"]
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "-r",
+                f"{Path(__file__).parent.resolve()}/requirements.txt",
+            ]
         )
 
 
@@ -39,9 +46,9 @@ def initialize_database():
 if __name__ == "__main__":
     check_dependencies()
     from adpan.main import main
+
     if not (Path(__file__).parent / "library.db").exists():
         initialize_database()
     else:
         print("Database already exists. Initialization skipped.")
     main()
-    
