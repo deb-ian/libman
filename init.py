@@ -3,54 +3,19 @@ from pathlib import Path
 
 
 def initialize_database():
-    """Initialize the library management system database."""
-    db_path = Path(__file__).parent / "library.db"
+    """Initialize the library management system database from the existing schema."""
+    project_root = Path(__file__).parent
+    db_path = project_root / "library.db"
+    schema_path = project_root / "schema.sql"
+
+    if not schema_path.exists():
+        raise FileNotFoundError(f"Schema file not found: {schema_path}")
 
     conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    with schema_path.open("r", encoding="utf-8") as schema_file:
+        schema_sql = schema_file.read()
 
-    # Create tables
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS books (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            author TEXT NOT NULL,
-            isbn TEXT UNIQUE,
-            published_year INTEGER,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """
-    )
-
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS members (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE,
-            phone TEXT,
-            join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """
-    )
-
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS loans (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            book_id INTEGER NOT NULL,
-            member_id INTEGER NOT NULL,
-            loan_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            due_date TIMESTAMP,
-            return_date TIMESTAMP,
-            FOREIGN KEY (book_id) REFERENCES books(id),
-            FOREIGN KEY (member_id) REFERENCES members(id)
-        )
-    """
-    )
-
-    conn.commit()
+    conn.executescript(schema_sql)
     conn.close()
     print(f"Database initialized at {db_path}")
 
