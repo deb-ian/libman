@@ -8,9 +8,6 @@ def initialize_database():
     db_path = project_root / "library.db"
     schema_path = project_root / "schema.sql"
 
-    if not schema_path.exists():
-        raise FileNotFoundError(f"Schema file not found: {schema_path}")
-
     conn = sqlite3.connect(db_path)
     with schema_path.open("r", encoding="utf-8") as schema_file:
         schema_sql = schema_file.read()
@@ -21,4 +18,7 @@ def initialize_database():
 
 
 if __name__ == "__main__":
-    initialize_database()
+    if not (Path(__file__).parent / "library.db").exists():
+        initialize_database()
+    else:
+        print("Database already exists. Initialization skipped.")
