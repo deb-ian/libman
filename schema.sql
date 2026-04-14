@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS "borrowhistory" (
 	"due_by"	TEXT NOT NULL,
 	PRIMARY KEY("borrow_id"),
 	FOREIGN KEY("book_id") REFERENCES "books"("book_id"),
-	FOREIGN KEY("issuer_id") REFERENCES "superuser"("issuer_id"),
+	FOREIGN KEY("issuer_id") REFERENCES "superuser"("user_id"),
 	FOREIGN KEY("member_id") REFERENCES "members"("member_id")
 );
 CREATE TABLE IF NOT EXISTS "members" (
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS "superuser" (
 	"email"	TEXT NOT NULL,
 	"salt"	TEXT NOT NULL,
 	"password_hash"	TEXT NOT NULL,
-	"role"	TEXT NOT NULL DEFAULT 'HELPER',
+	"role"	TEXT NOT NULL DEFAULT 'HELPER', --Possible values 'HELPER', 'ADMIN', 'LIBRARIAN'
 	PRIMARY KEY("user_id")
 );
 COMMIT;

@@ -3,24 +3,21 @@
 TODO: Make this into a cli tool with an full update manager
 """
 
-
+import importlib.util
 import sqlite3
 import subprocess
 import sys
 from pathlib import Path
 
-from adpan.main import main
-
-
 def check_dependencies():
     try:
         import flask
         import flask_admin
-
+        import sqlalchemy
     except ImportError:
         print("Key dependencies not found. Installing...")
         subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
+            [sys.executable, "-m", "pip", "install", "-r", f"{Path(__file__).parent.resolve()}/requirements.txt"]
         )
 
 
@@ -41,9 +38,11 @@ def initialize_database():
 
 if __name__ == "__main__":
     check_dependencies()
+    from adpan.main import main
     if not (Path(__file__).parent / "library.db").exists():
         initialize_database()
         main()
     else:
         print("Database already exists. Initialization skipped.")
         main()
+    
