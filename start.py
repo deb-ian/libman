@@ -1,25 +1,28 @@
-#type: ignore
+# type: ignore
 """
 TODO: Make this into a cli tool with an full update manager
 """
 
 
+import sqlite3
 import subprocess
 import sys
-
-
-
-import sqlite3
 from pathlib import Path
+
+from adpan.main import main
+
 
 def check_dependencies():
     try:
         import flask
         import flask_admin
-        
+
     except ImportError:
         print("Key dependencies not found. Installing...")
-        subprocess.check_call([sys.executable, '-m', "pip", "install", "-r", "requirements.txt"])
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
+        )
+
 
 def initialize_database():
     """Initialize the library management system database from the existing schema."""
@@ -40,5 +43,7 @@ if __name__ == "__main__":
     check_dependencies()
     if not (Path(__file__).parent / "library.db").exists():
         initialize_database()
+        main()
     else:
         print("Database already exists. Initialization skipped.")
+        main()
