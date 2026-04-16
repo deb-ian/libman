@@ -1,13 +1,28 @@
+import os
+
 from flask import Flask, redirect, url_for
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.theme import Bootstrap4Theme
 from flask_babel import Babel
 from flask_sqlalchemy import SQLAlchemy
 
 
+class MyIndexView(AdminIndexView):
+    @expose("/")
+    def index(self):
+        return self.render("admin/index.html")
+
+
 def main(debug=False):
-    app = Flask(__name__)
+    template_folder = os.path.join(os.path.dirname(__file__), "templates")
+    static_folder = os.path.join(os.path.dirname(__file__), "static")
+
+    app = Flask(
+        __name__,
+        template_folder=template_folder,
+        static_folder=static_folder,
+    )
     app.config["SECRET_KEY"] = "narainthegoatandkrishnathegoat"
 
     babel = Babel(app)
@@ -26,7 +41,12 @@ def main(debug=False):
         cls = type(table_name.capitalize(), (db.Model,), {"__table__": table})
         class_dict[table_name] = cls
 
-    admin = Admin(app, name="Admin Panel", theme=Bootstrap4Theme(swatch="darkly"))
+    admin = Admin(
+        app,
+        name="Admin Panel",
+        theme=Bootstrap4Theme(swatch="flatly"),
+        index_view=MyIndexView(name="Home", template="admin/index.html", url="/admin"),
+    )
 
     book_type = class_dict["book_type"]
     books = class_dict["books"]
