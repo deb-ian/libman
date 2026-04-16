@@ -12,8 +12,6 @@ from pathlib import Path
 def check_dependencies():
     try:
         import flask
-        import flask_admin
-        import sqlalchemy
     except ImportError:
         print("Key dependencies not found. Installing...")
         subprocess.check_call(
