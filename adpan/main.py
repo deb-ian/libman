@@ -34,138 +34,124 @@ def main(debug=False):
     members = class_dict["members"]
     superusers = class_dict["superuser"]
 
-    if book_type:
+    class BookTypeView(ModelView):
+        column_list = (
+            "isbn",
+            "title",
+            "author",
+            "genre",
+            "date_published",
+            "latest_revision",
+        )
+        form_columns = (
+            "isbn",
+            "title",
+            "author",
+            "genre",
+            "date_published",
+            "latest_revision",
+        )
+        column_labels = {
+            "isbn": "ISBN",
+            "title": "TITLE",
+            "author": "AUTHOR",
+            "genre": "GENRE",
+            "date_published": "DATE PUBLISHED",
+            "latest_revision": "LATEST REVISION",
+        }
+        column_searchable_list = ["title", "author", "genre"]
+        # column_filters = ["genre"]
 
-        class BookTypeView(ModelView):
-            column_list = (
-                "isbn",
-                "title",
-                "author",
-                "genre",
-                "date_published",
-                "latest_revision",
-            )
-            form_columns = (
-                "isbn",
-                "title",
-                "author",
-                "genre",
-                "date_published",
-                "latest_revision",
-            )
-            column_labels = {
-                "isbn": "ISBN",
-                "title": "TITLE",
-                "author": "AUTHOR",
-                "genre": "GENRE",
-                "date_published": "DATE PUBLISHED",
-                "latest_revision": "LATEST REVISION",
-            }
-            column_searchable_list = ["title", "author", "genre"]
-            # column_filters = ["genre"]
 
-    if books:
+    class BooksView(ModelView):
+        column_list = ("book_id", "isbn", "condition")
+        form_columns = ("book_id", "isbn", "condition")
+        column_labels = {
+            "book_id": "BOOK ID",
+            "isbn": "ISBN",
+            "condition": "CONDITION",
+        }
 
-        class BooksView(ModelView):
-            column_list = ("book_id", "isbn", "condition")
-            form_columns = ("book_id", "isbn", "condition")
-            column_labels = {
-                "book_id": "BOOK ID",
-                "isbn": "ISBN",
-                "condition": "CONDITION",
-            }
 
-    if borrowhistory:
+    class BorrowHisView(ModelView):
+        column_list = (
+            "borrow_id",
+            "book_id",
+            "member_id",
+            "issued_at",
+            "issuer_id",
+            "due_by",
+        )
+        form_columns = (
+            "borrow_id",
+            "book_id",
+            "member_id",
+            "issued_at",
+            "issuer_id",
+            "due_by",
+        )
+        column_labels = {
+            "borrow_id": "BORROW ID",
+            "book_id": "BOOK ID",
+            "member_id": "MEMBER ID",
+            "issued_at": "ISSUED AT",
+            "issuer_id": "ISSUER ID",
+            "due_by": "DUE BY",
+        }
 
-        class BorrowHisView(ModelView):
-            column_list = (
-                "borrow_id",
-                "book_id",
-                "member_id",
-                "issued_at",
-                "issuer_id",
-                "due_by",
-            )
-            form_columns = (
-                "borrow_id",
-                "book_id",
-                "member_id",
-                "issued_at",
-                "issuer_id",
-                "due_by",
-            )
-            column_labels = {
-                "borrow_id": "BORROW ID",
-                "book_id": "BOOK ID",
-                "member_id": "MEMBER ID",
-                "issued_at": "ISSUED AT",
-                "issuer_id": "ISSUER ID",
-                "due_by": "DUE BY",
-            }
 
-    if members:
+    class MembersView(ModelView):
+        column_list = ("member_id", "name", "email", "phone_number", "member_since")
+        form_columns = (
+            "member_id",
+            "name",
+            "email",
+            "phone_number",
+            "member_since",
+        )
+        column_labels = {
+            "member_id": "MEMBER ID",
+            "name": "NAME",
+            "email": "EMAIL",
+            "phone_number": "PHONE NUMBER",
+            "member_since": "MEMBER_SINCE",
+        }
+        column_searchable_list = ["name", "email", "phone_number"]
 
-        class MembersView(ModelView):
-            column_list = ("member_id", "name", "email", "phone_number", "member_since")
-            form_columns = (
-                "member_id",
-                "name",
-                "email",
-                "phone_number",
-                "member_since",
-            )
-            column_labels = {
-                "member_id": "MEMBER ID",
-                "name": "NAME",
-                "email": "EMAIL",
-                "phone_number": "PHONE NUMBER",
-                "member_since": "MEMBER_SINCE",
-            }
-            column_searchable_list = ["name", "email", "phone_number"]
 
-    if superusers:
+    class SuperusersView(ModelView):
+        column_list = (
+            "user_id",
+            "username",
+            "email",
+            "salt",
+            "password_hash",
+            "role",
+        )
+        form_columns = (
+            "user_id",
+            "username",
+            "email",
+            "salt",
+            "password_hash",
+            "role",
+        )
+        column_labels = {
+            "user_id": "USER ID",
+            "username": "USERNAME",
+            "email": "EMAIL",
+            "salt": "SALT",
+            "password_hash": "PASSWORD HASH",
+            "role": "ROLE",
+        }
+        column_searchable_list = ["username", "email"]
 
-        class SuperusersView(ModelView):
-            column_list = (
-                "user_id",
-                "username",
-                "email",
-                "salt",
-                "password_hash",
-                "role",
-            )
-            form_columns = (
-                "user_id",
-                "username",
-                "email",
-                "salt",
-                "password_hash",
-                "role",
-            )
-            column_labels = {
-                "user_id": "USER ID",
-                "username": "USERNAME",
-                "email": "EMAIL",
-                "salt": "SALT",
-                "password_hash": "PASSWORD HASH",
-                "role": "ROLE",
-            }
-            column_searchable_list = ["username", "email"]
 
-    if book_type:
-        admin.add_view(BookTypeView(book_type, db.session, name="Book Types"))
-
-    if books:
-        admin.add_view(BooksView(books, db.session, name="Books"))
-
-    if borrowhistory:
-        admin.add_view(BorrowHisView(borrowhistory, db.session, name="Borrow History"))
-
-    if members:
-        admin.add_view(MembersView(members, db.session, name="Our Members"))
-
-    if superusers:
-        admin.add_view(SuperusersView(superusers, db.session, name="Superusers"))
+    admin.add_view(BookTypeView(book_type, db.session, name="Book Types"))
+    admin.add_view(BooksView(books, db.session, name="Books"))
+    admin.add_view(BorrowHisView(borrowhistory, db.session, name="Borrow History"))
+    admin.add_view(MembersView(members, db.session, name="Our Members"))
+    admin.add_view(SuperusersView(superusers, db.session, name="Superusers"))
 
     @app.route("/")
     def index():
